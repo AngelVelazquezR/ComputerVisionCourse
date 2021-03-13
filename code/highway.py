@@ -32,14 +32,16 @@ while(cap.isOpened()):
 
     ###TO-DO ... BETTER RESULTS
     ##############################
-    
-
+    kernel_size = (3,3)
+    blur_grey = cv2.GaussianBlur(grey, kernel_size, 0)
+    for i in range(16):
+        blur_grey = cv2.GaussianBlur(blur_grey, kernel_size, 0)
     ###############################
-
+    
     #Apply Canny edge detector
     low_threshold = 10
     high_threshold = 70
-    edges = cv2.Canny(grey, low_threshold, high_threshold, apertureSize=3)
+    edges = cv2.Canny(blur_grey, low_threshold, high_threshold, apertureSize=3)
 
     #ROI Data
     bottom_left = param['bottom_left']
@@ -52,8 +54,7 @@ while(cap.isOpened()):
 
     ## TO DO Region of Interest
     ###########################################################
-    
-    
+    masked_edges = region_of_interest(edges, vertices)
     ##########################################################
 
     # 7.- Apply Hough transform for lane lines detection
@@ -65,7 +66,7 @@ while(cap.isOpened()):
     
     
     
-    hough_lines = cv2.HoughLinesP(edges, rho, theta, threshold, np.array([]), minLineLength=min_line_len, maxLineGap=max_line_gap)
+    hough_lines = cv2.HoughLinesP(masked_edges, rho, theta, threshold, np.array([]), minLineLength=min_line_len, maxLineGap=max_line_gap)
 
     if hough_lines is not None:
         #lines arrays
@@ -142,7 +143,7 @@ while(cap.isOpened()):
             cv2.resizeWindow('LINES', 1000,900)
 
             cv2.namedWindow('ROI', cv2.WINDOW_NORMAL)
-            cv2.imshow('ROI', edges)
+            cv2.imshow('ROI', masked_edges)
             cv2.resizeWindow('ROI', 1000,900)
 
 

@@ -1,4 +1,3 @@
-#libraries
 import cv2
 import math
 
@@ -47,7 +46,7 @@ def clickListener(event, x, y, flags, param):
 
 while(True):
     #get frame
-    frame = cv2.imread("../img/cosas.jpeg")
+    frame = cv2.imread("../img/cosas2.jpeg")
 
     #add the listener to the frame
     cv2.setMouseCallback("Frame", clickListener, frame)
@@ -68,6 +67,16 @@ while(True):
         ###################
         ## TO-DO CALCULATE PIXVALE PIX/CM
 
+        #get x and y difference
+        xsdif=clickRef_Ax-clickRef_Dx
+        ysdif=clickRef_Ay-clickRef_Dy
+
+        #get distance
+        xp=math.pow(xsdif,2)
+        yp=math.pow(ysdif,2)
+        distanciapix=math.sqrt(xp+yp)
+        #cm value per pixel
+        pixValue=cmValue/distanciapix
 
         ###################
 
@@ -78,9 +87,19 @@ while(True):
         ###################
         ## TO-DO CALCULATE CM PIX*CM
 
+        #get x and y difference
+        xdif=clickL_ix-clickR_ix
+        ydif=clickL_iy-clickR_iy
+
+        #get pixel Distance
+        xp=math.pow(xdif,2)
+        yp=math.pow(ydif,2)
+        distanciapix=math.sqrt(xp+yp)
+        #get cm distance using pixel value
+        distanciaCm=distanciapix*pixValue
 
         ###################
-
+        
         #show results
         cv2.putText(frame,str(round(distanciaCm,2))+'cm', (round((clickR_ix+clickL_ix)/2),round((clickR_iy+clickL_iy)/2)),
                     cv2.FONT_HERSHEY_DUPLEX, .80,(0,255,255), 1)
